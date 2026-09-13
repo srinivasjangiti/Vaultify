@@ -47,6 +47,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').then(reg => {
       console.log('Vaultify SW registered successfully:', reg.scope);
+      reg.update();
     }).catch(err => console.log('Vaultify SW registration failed:', err));
   });
 }

@@ -73,7 +73,7 @@
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:auto}
 
 body {
   font-family:'Space Mono', monospace;
@@ -93,6 +93,8 @@ body {
   background-image: radial-gradient(#000 1px, transparent 1px);
   background-size: 24px 24px;
   opacity: 0.05;
+  transform: translateZ(0);
+  will-change: transform;
 }
 :root.dark-mode .grid-overlay {
   background-image: radial-gradient(var(--border) 1px, transparent 1px);
@@ -616,10 +618,9 @@ footer .dev-badge svg{width:14px;height:14px;color:var(--text3);flex-shrink:0}
 .hi-action{cursor:pointer;color:var(--teal);background:none;border:none;text-decoration:none;font-size:1.2rem;}
 
 /* ── GLOBAL DROP ZONE ── */
-.global-drop-zone{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s ease;}
-.global-drop-zone.active{opacity:1;}
-.gdz-content{text-align:center;color:#fff;border:4px dashed var(--primary);border-radius:24px;padding:4rem;background:rgba(0,0,0,0.6);transform:scale(0.95);transition:transform 0.2s ease;pointer-events:none;}
-.global-drop-zone.active .gdz-content{transform:scale(1);}
+.global-drop-zone{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:99999;align-items:center;justify-content:center;pointer-events:none;}
+.global-drop-zone.active{display:flex;}
+.gdz-content{text-align:center;color:#fff;border:4px dashed var(--accent);padding:3rem;background:rgba(0,0,0,0.9);box-shadow:6px 6px 0px #000;pointer-events:none;}
 
 /* ── TOAST ── */
 #toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--surface);border:2px solid var(--border);border-radius:0;padding:.8rem 1.2rem;color:var(--text);font-size:.85rem;font-weight:700;box-shadow:4px 4px 0px #000;z-index:9999;transform:translateY(100px);opacity:0;transition:all .25s;pointer-events:none;display:flex;align-items:center;gap:.5rem;max-width:350px;font-family:'Space Mono',monospace; text-transform:uppercase;}
@@ -875,4 +876,113 @@ footer .dev-badge svg{width:14px;height:14px;color:var(--text3);flex-shrink:0}
   padding: 0.2rem 0.4rem;
   font-weight: 700;
 }
+
+/* ── PROMINENT CREATOR SPOTLIGHT BANNER ── */
+.hero-creator-banner {
+  width: 100%;
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  border: 3px solid var(--accent);
+  box-shadow: 6px 6px 0px #000;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+:root.dark-mode .hero-creator-banner {
+  box-shadow: 6px 6px 0px var(--border);
+}
+.hcb-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.hcb-avatar {
+  width: 46px;
+  height: 46px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--border);
+  box-shadow: 3px 3px 0px #000;
+  flex-shrink: 0;
+}
+:root.dark-mode .hcb-avatar {
+  box-shadow: 3px 3px 0px var(--border);
+}
+.hcb-name {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--text);
+}
+.hcb-sub {
+  font-size: 0.8rem;
+  color: var(--text2);
+}
+.hcb-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.hcb-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.15s;
+}
+.hcb-link:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0px #000;
+}
+.hcb-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  transition: all 0.15s;
+}
+.hcb-link-btn:hover {
+  background: var(--teal);
+  color: #000;
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+/* ── DEDICATED CREDITS VIEW ── */
+.credits-card-main {
+  padding: 2.5rem;
+  background: var(--surface);
+  border: 3px solid var(--border);
+  box-shadow: 8px 8px 0px #000;
+}
+:root.dark-mode .credits-card-main {
+  box-shadow: 8px 8px 0px var(--border);
+}
+.credits-hero-bio {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text2);
+  margin: 1.5rem 0;
+}
+
 

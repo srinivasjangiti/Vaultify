@@ -143,8 +143,8 @@
         </svg>
         History
       </button>
-      <button class="btn btn-outline" id="btn-creator" onclick="openCreatorModal()" style="padding: 0.5rem 0.9rem; font-size: 0.85rem; font-weight: 700; border-color: var(--accent); color: var(--accent);" title="Meet the Creator">
-        👤 Srinivas Jangiti
+      <button class="nav-tab" onclick="switchPage('credits')" id="tab-credits" style="border: 2px solid var(--accent); color: var(--accent); font-weight:900;">
+        ⭐ Credits
       </button>
       <button class="btn btn-teal" id="theme-toggle" onclick="toggleTheme()" style="padding: 0.5rem 0.9rem; font-size: 0.9rem;" title="Toggle Dark Mode">
         🕶️ Dark Mode
@@ -186,6 +186,26 @@
         <div class="hero-stat">
           <div class="val">P2P</div>
           <div class="lbl">Direct Sharing</div>
+        </div>
+      </div>
+
+      <!-- PROMINENT HERO CREATOR & CREDITS SPOTLIGHT -->
+      <div class="hero-creator-banner">
+        <div class="hcb-left">
+          <div class="hcb-avatar">SJ</div>
+          <div>
+            <div class="hcb-name">Created by <strong>Srinivas Jangiti</strong></div>
+            <div class="hcb-sub">100% Offline Zero-Knowledge Cryptography &amp; Steganography Suite</div>
+          </div>
+        </div>
+        <div class="hcb-links">
+          <a href="https://www.linkedin.com/in/srinivasajan/" target="_blank" rel="noopener" class="hcb-link">🔗 LinkedIn</a>
+          <a href="https://x.com/sriwanders" target="_blank" rel="noopener" class="hcb-link">🐦 X.com/sriwanders</a>
+          <a href="https://substack.com/@sriwanders" target="_blank" rel="noopener" class="hcb-link">📰 Substack</a>
+          <a href="https://medium.com/@sriwanders" target="_blank" rel="noopener" class="hcb-link">✍️ Medium</a>
+          <a href="https://www.youtube.com/@srinivasjan" target="_blank" rel="noopener" class="hcb-link">📺 YouTube</a>
+          <button type="button" class="hcb-link-btn" onclick="copyText('srinivasajan.work@gmail.com', 'Email copied: srinivasajan.work@gmail.com')">✉️ srinivasajan.work@gmail.com</button>
+          <button type="button" class="hcb-link-btn" onclick="copyText('+91 8767505121', 'Mobile copied: +91 8767505121')">📱 +91 8767505121</button>
         </div>
       </div>
     </div>
@@ -733,6 +753,85 @@
       </div>
     </div>
 
+    <!-- ══════════════ CREDITS & CREATOR PAGE ══════════════ -->
+    <div class="page section" id="page-credits">
+      <div class="card fade-in credits-card-main">
+        <div style="display:flex;align-items:center;gap:1.25rem;border-bottom:3px solid var(--border);padding-bottom:1.5rem;flex-wrap:wrap;">
+          <div class="creator-avatar" style="width:68px;height:68px;font-size:1.8rem;">SJ</div>
+          <div>
+            <h1 style="font-size:2rem;margin:0 0 0.25rem 0;letter-spacing:-1px;">Srinivas Jangiti</h1>
+            <div style="color:var(--accent);font-weight:700;font-size:0.95rem;">Creator, Software Engineer &amp; Security Architect • Vaultify</div>
+          </div>
+          <span class="tag tag-accent" style="margin-left:auto;font-size:0.8rem;padding:0.4rem 0.8rem;">CREATOR SPOTLIGHT</span>
+        </div>
+
+        <p class="credits-hero-bio">
+          <strong>Vaultify</strong> was conceptualized, architected, and engineered by <strong>Srinivas Jangiti</strong> as an uncompromising 100% offline, zero-knowledge privacy tool. All operations—including AES-256-GCM authenticated encryption, PBKDF2 key stretching, pixel-array steganography, in-memory ZIP archive exploration, and DoD 5220.22-M memory sanitization—execute exclusively inside the client browser sandbox with zero telemetry.
+        </p>
+
+        <div style="font-weight:900;font-size:1.1rem;margin-bottom:1rem;text-transform:uppercase;color:var(--text);">Connect with Srinivas Jangiti:</div>
+
+        <div class="creator-links-grid" style="grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));">
+          <a href="https://www.linkedin.com/in/srinivasajan/" target="_blank" rel="noopener" class="creator-link-item">
+            <span class="cli-icon">🔗</span>
+            <div class="cli-text">
+              <div class="cli-title">LinkedIn</div>
+              <div class="cli-sub">linkedin.com/in/srinivasajan</div>
+            </div>
+            <span class="copy-badge">Visit ↗</span>
+          </a>
+          <a href="https://x.com/sriwanders" target="_blank" rel="noopener" class="creator-link-item">
+            <span class="cli-icon">🐦</span>
+            <div class="cli-text">
+              <div class="cli-title">X (Twitter)</div>
+              <div class="cli-sub">x.com/sriwanders</div>
+            </div>
+            <span class="copy-badge">Follow ↗</span>
+          </a>
+          <a href="https://substack.com/@sriwanders" target="_blank" rel="noopener" class="creator-link-item">
+            <span class="cli-icon">📰</span>
+            <div class="cli-text">
+              <div class="cli-title">Substack</div>
+              <div class="cli-sub">substack.com/@sriwanders</div>
+            </div>
+            <span class="copy-badge">Read ↗</span>
+          </a>
+          <a href="https://medium.com/@sriwanders" target="_blank" rel="noopener" class="creator-link-item">
+            <span class="cli-icon">✍️</span>
+            <div class="cli-text">
+              <div class="cli-title">Medium</div>
+              <div class="cli-sub">medium.com/@sriwanders</div>
+            </div>
+            <span class="copy-badge">Articles ↗</span>
+          </a>
+          <a href="https://www.youtube.com/@srinivasjan" target="_blank" rel="noopener" class="creator-link-item">
+            <span class="cli-icon">📺</span>
+            <div class="cli-text">
+              <div class="cli-title">YouTube</div>
+              <div class="cli-sub">youtube.com/@srinivasjan</div>
+            </div>
+            <span class="copy-badge">Channel ↗</span>
+          </a>
+          <div class="creator-link-item" onclick="copyText('srinivasajan.work@gmail.com', 'Email copied: srinivasajan.work@gmail.com')" style="cursor:pointer;">
+            <span class="cli-icon">✉️</span>
+            <div class="cli-text">
+              <div class="cli-title">Email</div>
+              <div class="cli-sub">srinivasajan.work@gmail.com</div>
+            </div>
+            <span class="copy-badge">Copy</span>
+          </div>
+          <div class="creator-link-item" onclick="copyText('+91 8767505121', 'Mobile copied: +91 8767505121')" style="cursor:pointer;">
+            <span class="cli-icon">📱</span>
+            <div class="cli-text">
+              <div class="cli-title">Mobile</div>
+              <div class="cli-sub">+91 8767505121</div>
+            </div>
+            <span class="copy-badge">Copy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- FULLSCREEN MODAL -->
@@ -821,15 +920,29 @@
   </div>
 
   <footer>
-    <div style="max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem;">
-      <div>
-        <div style="font-weight:900;font-size:1.2rem;letter-spacing:-0.5px;">Vault<span>ify</span></div>
-        <div style="font-size:0.8rem;color:var(--text2);margin-top:4px;">100% Offline Client-Side File Encryption &amp; Steganography</div>
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem;">
+        <div>
+          <div style="font-weight:900;font-size:1.3rem;letter-spacing:-0.5px;">Vault<span>ify</span></div>
+          <div style="font-size:0.8rem;color:var(--text2);margin-top:4px;">100% Offline Client-Side File Encryption &amp; Steganography Suite</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;font-size:0.85rem;">
+          <span>Architected by <strong>Srinivas Jangiti</strong></span>
+          <button class="btn btn-outline btn-sm" onclick="switchPage('credits')">⭐ View Credits</button>
+          <a href="https://github.com/srinivasjangiti/Vaultify" target="_blank" rel="noopener" class="btn btn-teal btn-sm">⭐ GitHub Repo</a>
+        </div>
       </div>
-      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;font-size:0.85rem;">
-        <span>Crafted by <strong>Srinivas Jangiti</strong></span>
-        <button class="btn btn-outline btn-sm" onclick="openCreatorModal()">👤 Developer Profile</button>
-        <a href="https://github.com/srinivasjangiti/Vaultify" target="_blank" rel="noopener" class="btn btn-teal btn-sm">⭐ GitHub Repo</a>
+
+      <!-- DIRECT FOOTER SOCIAL & CONTACT BADGES -->
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;border-top:1px solid var(--border);padding-top:1.25rem;">
+        <span style="font-size:0.8rem;font-weight:700;color:var(--text3);margin-right:0.5rem;">Contact Srinivas Jangiti:</span>
+        <a href="https://www.linkedin.com/in/srinivasajan/" target="_blank" rel="noopener" class="hcb-link" style="font-size:0.75rem;">LinkedIn</a>
+        <a href="https://x.com/sriwanders" target="_blank" rel="noopener" class="hcb-link" style="font-size:0.75rem;">X.com</a>
+        <a href="https://substack.com/@sriwanders" target="_blank" rel="noopener" class="hcb-link" style="font-size:0.75rem;">Substack</a>
+        <a href="https://medium.com/@sriwanders" target="_blank" rel="noopener" class="hcb-link" style="font-size:0.75rem;">Medium</a>
+        <a href="https://www.youtube.com/@srinivasjan" target="_blank" rel="noopener" class="hcb-link" style="font-size:0.75rem;">YouTube</a>
+        <button type="button" class="hcb-link-btn" style="font-size:0.75rem;" onclick="copyText('srinivasajan.work@gmail.com', 'Email copied: srinivasajan.work@gmail.com')">✉️ srinivasajan.work@gmail.com</button>
+        <button type="button" class="hcb-link-btn" style="font-size:0.75rem;" onclick="copyText('+91 8767505121', 'Mobile copied: +91 8767505121')">📱 +91 8767505121</button>
       </div>
     </div>
   </footer>

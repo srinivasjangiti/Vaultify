@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vaultify-v2';
+const CACHE_NAME = 'vaultify-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -33,12 +33,11 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Use cache-first strategy
+  // Network first, falling back to cache for offline resilience
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        if (!response || response.status !== 200 || (response.type !== 'basic' && response.type !== 'cors')) {
+    fetch(event.request)
+      .then((response) => {
+        if (!response || response.status !== 200) {
           return response;
         }
         const responseToCache = response.clone();
@@ -46,9 +45,9 @@ self.addEventListener('fetch', (event) => {
           cache.put(event.request, responseToCache);
         });
         return response;
-      }).catch(() => {
-        // Offline fallback
-      });
-    })
+      })
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });
