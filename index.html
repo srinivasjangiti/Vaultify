@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vaultify | Secure Offline File Encryption & Steganography</title>
+  
+  <!-- Basic SEO -->
+  <meta name="description" content="Vaultify is a military-grade, 100% offline file encryption tool. Encrypt files into custom formats, hide secrets inside PNG images using steganography, and instantly self-destruct decrypted data from memory. No servers, no tracking, complete privacy." />
+  <meta name="keywords" content="offline file encryption, browser encryption, steganography tool, hide files in images, AES-256-GCM, PBKDF2 encryption, secure file sharing, zero-knowledge encryption, client-side encryption, self-destructing files" />
+  <meta name="author" content="Srinivasa Jangiti" />
+  <link rel="canonical" href="https://vaultify.com" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://vaultify.com" />
+  <meta property="og:title" content="Vaultify | Secure Offline File Encryption" />
+  <meta property="og:description" content="100% offline AES-256-GCM file encryption. Turn any file into a custom format, or hide it inside an image using Steganography. Zero servers involved." />
+  <meta property="og:image" content="https://vaultify.com/og-image.jpg" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://vaultify.com" />
+  <meta property="twitter:title" content="Vaultify | Secure Offline File Encryption" />
+  <meta property="twitter:description" content="100% offline AES-256-GCM file encryption. Turn any file into a custom format, or hide it inside an image using Steganography." />
+  <meta property="twitter:image" content="https://vaultify.com/og-image.jpg" />
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Vaultify",
+    "url": "https://vaultify.com",
+    "description": "A 100% offline browser-based utility for military-grade file encryption, decryption, and image steganography using AES-256-GCM.",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "creator": {
+      "@type": "Person",
+      "name": "Srinivasa Jangiti"
+    }
+  }
+  </script>
+  
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <meta name="theme-color" content="#000000" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- fflate for client-side zip -->
+  <script src="fflate.min.js"></script>
+</head>
+
+<body>
+
+  <div class="bg-mesh"></div>
+  <div class="grid-overlay"></div>
+
+  <!-- GLOBAL DROP ZONE -->
+  <div id="global-drop-zone" class="global-drop-zone">
+    <div class="gdz-content">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:64px;height:64px;margin-bottom:1rem;color:var(--primary);">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <polyline points="17 8 12 3 7 8" />
+        <line x1="12" y1="3" x2="12" y2="15" />
+      </svg>
+      <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Drop File Here</h2>
+      <p style="color: var(--text2); font-size: 1.1rem;">Vaultify will automatically detect if it needs encryption or decryption.</p>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo" style="cursor:pointer;" onclick="switchPage('home')">
+      Vault<span>ify</span>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchPage('encrypt')" id="tab-encrypt">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;">
+          <rect x="3" y="11" width="18" height="11" rx="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        Encrypt
+      </button>
+      <button class="nav-tab" onclick="switchPage('decrypt')" id="tab-decrypt">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;">
+          <rect x="3" y="11" width="18" height="11" rx="2" />
+          <path d="M7 11V7a5 5 0 0 1 4.9-4.9" />
+          <line x1="16" y1="7" x2="16" y2="11" />
+        </svg>
+        Decrypt
+      </button>
+      <button class="nav-tab" onclick="switchPage('info')" id="tab-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        How it Works
+      </button>
+      <button class="nav-tab" onclick="toggleHistory()" id="tab-history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        History
+      </button>
+      <button class="btn btn-teal" id="theme-toggle" onclick="toggleTheme()" style="padding: 0.5rem 1rem; font-size: 0.9rem; margin-left: 1rem;" title="Toggle Dark Mode">
+        🕶️ Dark Mode
+      </button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <div class="hero" id="hero-section">
+      <div class="hero-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" style="width:13px;height:13px;color:var(--text);">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        Zero Server Storage — All Local, All Private
+      </div>
+      <h1>
+        Your Files.<br />
+        Your Format.<br />
+        <span class="grad">Your Rules.</span>
+      </h1>
+      <p>Encrypt any file into a custom format you name — <span class="mono" style="color:var(--text)">.yowtf</span>,
+        <span class="mono" style="color:var(--text)">.iamboss</span>, <span class="mono"
+          style="color:var(--text)">.secretstash</span> — and only <em>you</em> can open it.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="val">AES-GCM</div>
+          <div class="lbl">Encryption</div>
+        </div>
+        <div class="hero-stat">
+          <div class="val">100%</div>
+          <div class="lbl">Offline Capable</div>
+        </div>
+        <div class="hero-stat">
+          <div class="val">ZIP</div>
+          <div class="lbl">Folder Support</div>
+        </div>
+        <div class="hero-stat">
+          <div class="val">P2P</div>
+          <div class="lbl">Direct Sharing</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ ENCRYPT PAGE ══════════════ -->
+    <div class="page active section" id="page-encrypt">
+      <div class="card fade-in">
+        <div class="card-title">
+          <div class="icon purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" style="width:18px;height:18px;color:var(--text);">
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+          </div>
+          Encrypt a File
+          <span class="tag tag-accent">Step 1 of 1</span>
+        </div>
+        <p class="card-sub">Choose any file or multiple files, set your secret password, pick a custom
+          extension — download your vault file.</p>
+
+        <!-- Drop Zone -->
+        <div class="field-group">
+          <label>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-1px;">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+            </svg>
+            Source File(s)
+          </label>
+          <div class="drop-zone" id="enc-drop" ondragover="handleDrag(event,'enc-drop')"
+            ondragleave="handleDragLeave(event,'enc-drop')" ondrop="handleDrop(event,'enc')">
+            <input type="file" id="enc-file-input" onchange="handleEncFileChange(event)" multiple />
+            <div class="drop-icon" id="enc-drop-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" style="width:40px;height:40px;color:var(--text3);">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+              </svg>
+            </div>
+            <div class="drop-title" id="enc-drop-title">Drop any file or folder here</div>
+            <div class="drop-hint" id="enc-drop-hint">Multiple files will be automatically zipped before encryption.</div>
+          </div>
+        </div>
+
+        <!-- Custom Extension -->
+        <div class="field-group">
+          <label>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-1px;">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+              <line x1="7" y1="7" x2="7.01" y2="7" />
+            </svg>
+            Custom Extension (what you want to call your format)
+          </label>
+          <div class="field-row">
+            <div class="ext-prefix">.</div>
+            <input type="text" id="enc-ext" placeholder="yowtf" maxlength="20" oninput="sanitizeExt(this)" />
+          </div>
+          <div class="ext-chips">
+            <span class="ext-chip" onclick="setExt('yowtf')">.yowtf</span>
+            <span class="ext-chip" onclick="setExt('iamboss')">.iamboss</span>
+            <span class="ext-chip" onclick="setExt('secretstash')">.secretstash</span>
+            <span class="ext-chip" onclick="setExt('myvault')">.myvault</span>
+          </div>
+          <div style="margin-top: 1rem;">
+            <label style="display:flex;align-items:center;gap:0.5rem;font-weight:bold;cursor:pointer;background:var(--surface2);padding:0.75rem;border:1px solid var(--border);border-radius:8px;">
+              <input type="checkbox" id="enc-stego" onchange="toggleStego(this.checked)" style="width:16px;height:16px;">
+              <span>🖼️ Steganography Mode (Hide inside a PNG image)</span>
+            </label>
+            <div id="stego-desc" style="display:none;font-size:0.8rem;color:var(--text2);margin-top:0.5rem;">
+              When enabled, your encrypted vault will be appended to a normal-looking PNG file. It will look and act like a picture, but can be decrypted by dropping it back into Vaultify.
+            </div>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="field-group">
+          <label>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-1px;">
+              <path
+                d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+            </svg>
+            Secret Password
+          </label>
+          <div class="field-row">
+            <input type="password" id="enc-pw" placeholder="Enter a strong password..."
+              oninput="updateStrength(this.value)" />
+            <button class="btn btn-teal" style="flex-shrink:0;padding: 0 1rem;font-size:1.2rem;" onclick="generatePassword()" title="Generate Secure Password">
+              🎲
+            </button>
+            <button class="btn btn-primary" style="flex-shrink:0;padding:.7rem 1rem;" onclick="togglePw('enc-pw', this)"
+              id="enc-pw-toggle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" style="width:16px;height:16px;">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+          <div class="pw-strength-bar">
+            <div class="pw-strength-fill" id="pw-fill"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <div class="pw-strength-label" id="pw-label">Enter a password</div>
+            <div class="pw-strength-label" id="pw-entropy" style="color:var(--text3)"></div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <input type="password" id="enc-pw2" placeholder="Re-enter your password..." />
+        </div>
+        
+        <!-- Advanced Settings Toggle -->
+        <details class="adv-settings">
+          <summary>⚙️ Advanced Crypto Settings</summary>
+          <div class="adv-panel">
+            <div class="field-group">
+              <label>PBKDF2 Iterations</label>
+              <input type="number" id="adv-iters" value="250000" min="100000" step="50000" />
+              <div style="font-size:0.75rem; color:var(--text3); margin-top:4px;">Higher = more secure but slower.</div>
+            </div>
+            <div class="field-group">
+              <label>Salt Length (bytes)</label>
+              <input type="number" id="adv-salt" value="32" min="16" max="64" />
+            </div>
+            <div class="field-group">
+              <label>Encryption Algorithm</label>
+              <select id="adv-algo" disabled style="width:100%; padding:0.5rem; background:var(--surface); border:2px solid var(--border); color:var(--text); font-family:monospace; font-weight:bold;">
+                <option value="AES-GCM" selected>AES-256-GCM (Hardware Accelerated)</option>
+                <option value="Argon2id">Argon2id (Coming soon)</option>
+              </select>
+            </div>
+          </div>
+        </details>
+
+        <!-- Encrypt Button -->
+        <button class="btn btn-primary btn-full" id="enc-btn" onclick="encryptFile()" style="margin-top:1rem;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width:16px;height:16px;">
+            <rect x="3" y="11" width="18" height="11" rx="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          Encrypt &amp; Generate Vault File
+        </button>
+
+        <!-- Progress (Glitch Terminal) -->
+        <div class="progress-wrap terminal" id="enc-progress">
+          <div class="progress-label" id="enc-progress-label">Encrypting…</div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="enc-progress-fill"></div>
+          </div>
+          <div class="progress-info" id="enc-progress-info">Initializing crypto worker…</div>
+          <div class="terminal-overlay"></div>
+        </div>
+
+        <!-- Error -->
+        <div class="error-box" id="enc-error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0;">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <span id="enc-error-text"></span>
+        </div>
+
+        <!-- Result -->
+        <div class="result-box" id="enc-result">
+          <div class="result-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" style="width:32px;height:32px;color:var(--text);">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <div class="result-info">
+            <div class="r-title">Vault Created!</div>
+            <div class="result-filename mono" id="enc-result-name"></div>
+          </div>
+          <div style="display:flex; gap:.5rem; flex-wrap:wrap; align-items:center;">
+            <button class="btn btn-primary" id="enc-download-btn" onclick="downloadEncrypted()">
+              ⬇️ Download
+            </button>
+            <button class="btn btn-teal" onclick="switchPage('share')">
+              📡 P2P Share
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DECRYPT PAGE ══════════════ -->
+    <div class="page section" id="page-decrypt">
+      <div class="card fade-in">
+        <div class="card-title">
+          <div class="icon teal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" style="width:18px;height:18px;color:var(--text);">
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+            </svg>
+          </div>
+          Decrypt &amp; View
+          <span class="tag tag-green">Offline Ready</span>
+        </div>
+        <p class="card-sub">Open any vault file you or someone else encrypted.</p>
+
+        <!-- Drop Zone -->
+        <div class="field-group">
+          <label>Vault File</label>
+          <div class="drop-zone" id="dec-drop" ondragover="handleDrag(event,'dec-drop')"
+            ondragleave="handleDragLeave(event,'dec-drop')" ondrop="handleDrop(event,'dec')">
+            <input type="file" id="dec-file-input" onchange="handleDecFileChange(event)" />
+            <div class="drop-icon" id="dec-drop-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" style="width:40px;height:40px;color:var(--text3);">
+                <rect x="3" y="11" width="18" height="11" rx="2" />
+                <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+              </svg>
+            </div>
+            <div class="drop-title" id="dec-drop-title">Drop your vault file here</div>
+            <div class="drop-hint" id="dec-drop-hint">Any custom extension: .yowtf, .myvault, etc.</div>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="field-group">
+          <label>Your Password</label>
+          <div class="field-row">
+            <input type="password" id="dec-pw" placeholder="Enter the password used when encrypting…" />
+            <button class="btn btn-teal" style="flex-shrink:0;padding:.7rem 1rem;" onclick="togglePw('dec-pw', this)"
+              id="dec-pw-toggle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" style="width:16px;height:16px;">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button class="btn btn-teal btn-full" id="dec-btn" onclick="decryptFile()">
+          Decrypt &amp; View File
+        </button>
+
+        <!-- Progress -->
+        <div class="progress-wrap terminal" id="dec-progress">
+          <div class="progress-label" id="dec-progress-label">Decrypting…</div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="dec-progress-fill" style="background:var(--teal)"></div>
+          </div>
+          <div class="progress-info" id="dec-progress-info">Deriving key from password…</div>
+          <div class="terminal-overlay"></div>
+        </div>
+
+        <!-- Error -->
+        <div class="error-box" id="dec-error">
+          <span id="dec-error-text"></span>
+        </div>
+
+        <!-- Viewer -->
+        <div class="viewer-wrap" id="viewer-wrap">
+          <div class="viewer-toolbar">
+            <div class="viewer-file-info">
+              <div class="fname" id="viewer-fname"></div>
+              <div class="fsize" id="viewer-fsize"></div>
+            </div>
+            <div class="viewer-actions" style="display:flex; align-items:center; gap:1rem;">
+              <label style="display:flex;align-items:center;gap:0.3rem;font-size:0.8rem;color:var(--text2);cursor:pointer;" title="Wipe file from memory when closed">
+                <input type="checkbox" id="self-destruct-cb" checked>
+                <span>Self-Destruct</span>
+              </label>
+              <button class="btn btn-teal" id="viewer-download-btn" onclick="downloadDecrypted()"
+                style="padding:.45rem .9rem;font-size:.8rem;">
+                ⬇️ Save File
+              </button>
+              <button class="btn btn-primary" onclick="closeViewer()"
+                style="padding:.45rem .9rem;font-size:.8rem;background:var(--red);border-color:var(--red);">
+                ✖ Close
+              </button>
+            </div>
+          </div>
+          <div class="viewer-content" id="viewer-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ INFO PAGE ══════════════ -->
+    <div class="page section" id="page-info">
+      <div class="card fade-in">
+        <div class="card-title">
+          <div class="icon pink">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" style="width:18px;height:18px;color:var(--text);">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          </div>
+          How Vaultify Works
+        </div>
+        <div class="info-grid" style="margin-bottom: 2rem;">
+          <div class="info-card ok-card">
+            <h3>AES-256-GCM</h3>
+            <p>Every file is encrypted using AES-256-GCM — the same military-grade standard used by banks and governments.</p>
+          </div>
+          <div class="info-card ok-card">
+            <h3>Web Workers & PBKDF2</h3>
+            <p>Passwords are stretched via PBKDF2 with up to 250,000 iterations inside a background Web Worker so the UI never freezes.</p>
+          </div>
+          <div class="info-card accent-card">
+            <h3>100% Offline PWA</h3>
+            <p>Vaultify is a Progressive Web App. Install it on your phone or desktop to use it completely offline with zero server contact.</p>
+          </div>
+          <div class="info-card accent-card">
+            <h3>Steganography</h3>
+            <p>Hide your encrypted vaults in plain sight by appending them to innocent-looking PNG images.</p>
+          </div>
+        </div>
+
+        <article class="seo-content" style="color:var(--text2); font-size: 0.95rem; line-height: 1.6;">
+          <h2 style="color:var(--text); margin-bottom: 1rem; font-size: 1.3rem;">Secure Offline File Encryption & Steganography</h2>
+          <p style="margin-bottom: 1rem;">
+            <strong>Vaultify</strong> is a privacy-first, client-side utility designed to provide military-grade file encryption directly in your web browser. Unlike traditional cloud storage services, Vaultify operates completely offline. No files are ever uploaded to a server, ensuring absolute zero-knowledge privacy.
+          </p>
+          
+          <h3 style="color:var(--text); margin-bottom: 0.5rem; font-size: 1.1rem; margin-top: 1.5rem;">How to Use Vaultify</h3>
+          <p style="margin-bottom: 1rem;">
+            Using Vaultify is incredibly simple. To encrypt files, simply drag and drop them onto the screen. You can drop individual files or entire folders—Vaultify will automatically zip multiple files using an optimized client-side compression algorithm before encrypting them with a secure password using <strong>AES-256-GCM</strong> and <strong>PBKDF2</strong> key derivation.
+          </p>
+
+          <h3 style="color:var(--text); margin-bottom: 0.5rem; font-size: 1.1rem; margin-top: 1.5rem;">Image Steganography & Custom Formats</h3>
+          <p style="margin-bottom: 1rem;">
+            For maximum privacy, Vaultify features <strong>Steganography Mode</strong>. This allows you to disguise your encrypted vault as a standard PNG image. To anyone else, it looks and acts like a normal picture, but when dropped back into the Vaultify decryption engine, it extracts your original hidden data. You can also export your encrypted files using any custom file extension (e.g., <code>.myvault</code>) to avoid standard file scrapers.
+          </p>
+
+          <h3 style="color:var(--text); margin-bottom: 0.5rem; font-size: 1.1rem; margin-top: 1.5rem;">Self-Destruct Memory Wiping</h3>
+          <p>
+            When you decrypt a file, Vaultify's advanced browser viewer allows you to open images, PDFs, and videos instantly without downloading them. When you're done, simply hit the Close button with <strong>Self-Destruct</strong> enabled, and Vaultify will securely wipe the decrypted data from your browser's memory, leaving absolutely no trace of your sensitive files on the device.
+          </p>
+        </article>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FULLSCREEN MODAL -->
+  <div class="fs-modal" id="fs-modal">
+    <div class="fs-toolbar">
+      <span class="fs-title" id="fs-title">Filename.ext</span>
+      <button class="btn btn-outline" style="border:none;color:#fff;" onclick="closeFullscreen()">✕ Close</button>
+    </div>
+    <div class="fs-content" id="fs-content"></div>
+  </div>
+
+  <footer>
+    Made by <span>Vaultify</span> — Zero servers, zero tracking, zero compromise.<br><br>
+    Created by <span>Srinivas Jangiti</span>
+  </footer>
+
+  <script id="crypto-worker" type="javascript/worker">
+const MAGIC = [0x56, 0x4C, 0x54, 0x46, 0x59]; // "VLTFY"
+const FORMAT_VER = 0x01;
+const SALT_LEN = 32;
+const IV_LEN = 12;
+
+async function deriveKey(password, salt, iters) {
+  const enc = new TextEncoder();
+  const baseKey = await crypto.subtle.importKey(
+    'raw', enc.encode(password), { name: 'PBKDF2' }, false, ['deriveKey']
+  );
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: iters, hash: 'SHA-256' },
+    baseKey,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+self.onmessage = async (e) => {
+  const { type, fileData, password, metaObj, iters } = e.data;
+  
+  try {
+    if (type === 'encrypt') {
+      self.postMessage({ type: 'progress', pct: 25, label: 'Generating salt & IV…', info: 'Generating cryptographic random values…' });
+      const salt = crypto.getRandomValues(new Uint8Array(SALT_LEN));
+      const iv = crypto.getRandomValues(new Uint8Array(IV_LEN));
+      
+      self.postMessage({ type: 'progress', pct: 40, label: 'Deriving key (PBKDF2)…', info: `Running ${iters.toLocaleString()} iterations — this may take a moment…` });
+      const key = await deriveKey(password, salt, iters);
+      
+      self.postMessage({ type: 'progress', pct: 65, label: 'Encrypting payload…', info: 'AES-256-GCM encrypting your file…' });
+      const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, fileData);
+      
+      self.postMessage({ type: 'progress', pct: 80, label: 'Encrypting metadata…', info: 'Encrypting file info…' });
+      const metaIV = crypto.getRandomValues(new Uint8Array(IV_LEN));
+      const metaCipher = await crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv: metaIV },
+        key,
+        new TextEncoder().encode(JSON.stringify(metaObj))
+      );
+      
+      self.postMessage({ type: 'progress', pct: 90, label: 'Assembling vault file…', info: 'Building binary format…' });
+      const metaCipherBuf = new Uint8Array(metaCipher);
+      const payloadBuf = new Uint8Array(ciphertext);
+      const metaLenBuf = new Uint8Array(4);
+      new DataView(metaLenBuf.buffer).setUint32(0, metaCipherBuf.length, true);
+      
+      const total = new Uint8Array(
+        5 + 1 + SALT_LEN + IV_LEN + IV_LEN + 4 + metaCipherBuf.length + payloadBuf.length
+      );
+      let off = 0;
+      total.set(MAGIC, off); off += 5;
+      total[off] = FORMAT_VER; off += 1;
+      total.set(salt, off); off += SALT_LEN;
+      total.set(iv, off); off += IV_LEN;
+      total.set(metaIV, off); off += IV_LEN;
+      total.set(metaLenBuf, off); off += 4;
+      total.set(metaCipherBuf, off); off += metaCipherBuf.length;
+      total.set(payloadBuf, off);
+      
+      self.postMessage({ type: 'done', result: total.buffer }, [total.buffer]);
+      
+    } else if (type === 'decrypt') {
+      const data = new Uint8Array(fileData);
+      self.postMessage({ type: 'progress', pct: 20, label: 'Verifying magic bytes…', info: 'Scanning for VLTFY signature…' });
+      
+      let startOff = -1;
+      for (let i = 0; i < data.length - 5; i++) {
+        if (data[i] === 0x56 && data[i+1] === 0x4C && data[i+2] === 0x54 && data[i+3] === 0x46 && data[i+4] === 0x59) {
+          startOff = i;
+          break;
+        }
+      }
+      
+      if (startOff === -1) throw new Error('This does not appear to be a valid Vaultify vault file. Wrong file or corrupted.');
+      
+      const vaultData = data.slice(startOff);
+      const ver = vaultData[5];
+      if (ver !== FORMAT_VER) throw new Error('Unsupported vault format version: ' + ver);
+      
+      let off = 6;
+      const salt = vaultData.slice(off, off + SALT_LEN); off += SALT_LEN;
+      const iv = vaultData.slice(off, off + IV_LEN); off += IV_LEN;
+      const metaIV = vaultData.slice(off, off + IV_LEN); off += IV_LEN;
+      const metaLen = new DataView(vaultData.buffer, vaultData.byteOffset + off, 4).getUint32(0, true); off += 4;
+      if (off + metaLen > vaultData.length) throw new Error('Corrupted vault file (meta length too large).');
+      const metaCipher = vaultData.slice(off, off + metaLen); off += metaLen;
+      const payload = vaultData.slice(off);
+      
+      self.postMessage({ type: 'progress', pct: 40, label: 'Deriving key (PBKDF2)…', info: `Running ${iters.toLocaleString()} iterations…` });
+      const key = await deriveKey(password, salt, iters);
+      
+      self.postMessage({ type: 'progress', pct: 65, label: 'Decrypting metadata…', info: 'Recovering file info…' });
+      let meta;
+      try {
+        const metaPlain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: metaIV }, key, metaCipher);
+        meta = JSON.parse(new TextDecoder().decode(metaPlain));
+      } catch {
+        throw new Error('Wrong password or corrupted vault. Cannot decrypt metadata.');
+      }
+      
+      self.postMessage({ type: 'progress', pct: 80, label: 'Decrypting payload…', info: 'Recovering your original file…' });
+      let plain;
+      try {
+        plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, payload);
+      } catch {
+        throw new Error('Wrong password or corrupted payload.');
+      }
+      
+      self.postMessage({ type: 'done', result: plain, meta }, [plain]);
+    }
+  } catch (e) {
+    self.postMessage({ type: 'error', error: e.message });
+  }
+};
+  </script>
+
+  <!-- HISTORY DRAWER -->
+  <div class="history-drawer" id="history-drawer">
+    <div class="history-header">
+      <h3 style="margin:0;font-size:1.1rem;color:var(--text);">Session History</h3>
+      <button onclick="toggleHistory()" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.2rem;">✖</button>
+    </div>
+    <div id="history-list">
+      <div style="color:var(--text3);text-align:center;padding:2rem 0;font-family:'Space Mono',monospace;font-size:0.8rem;">No recent activity</div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
