@@ -1,12 +1,11 @@
-const CACHE_NAME = 'vaultify-v1';
+const CACHE_NAME = 'vaultify-v2';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/app.js',
-  '/crypto.worker.js',
-  '/manifest.json',
-  'https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js'
+  './',
+  './index.html',
+  './style.css',
+  './app.js',
+  './fflate.min.js',
+  './manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
@@ -39,8 +38,7 @@ self.addEventListener('fetch', (event) => {
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
       return fetch(event.request).then((response) => {
-        // Cache new assets (like fonts) on the fly
-        if (!response || response.status !== 200 || response.type !== 'basic' && response.type !== 'cors') {
+        if (!response || response.status !== 200 || (response.type !== 'basic' && response.type !== 'cors')) {
           return response;
         }
         const responseToCache = response.clone();
@@ -49,7 +47,7 @@ self.addEventListener('fetch', (event) => {
         });
         return response;
       }).catch(() => {
-        // If offline and request fails, just fail silently for non-critical assets
+        // Offline fallback
       });
     })
   );
