@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vaultify-v3';
+const CACHE_NAME = 'vaultify-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -9,11 +9,6 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
-    })
-  );
   self.skipWaiting();
 });
 
@@ -27,9 +22,8 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
